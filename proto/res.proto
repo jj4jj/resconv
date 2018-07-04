@@ -1,0 +1,34 @@
+package ux;
+
+
+enum EType {
+    ET_NONE = 0;
+    ET_A = 1;
+    ET_B = 2;
+}
+
+message AMsg {
+    optional    EType   et = 1;
+    optional    int32   i32=2;
+    optional    string  str=3;
+}
+
+message BMsg {
+    optional    EType   et = 1;
+    optional    int32   i32=2;
+    optional    string  str=3;
+    optional    AMsg    amf = 4;
+}
+
+message TestDesc {
+    optional    int32   i32=1;
+    optional    double  df=2;
+    optional    bool    bf=3;
+    optional    AMsg    amf=4;
+    optional    BMsg    bmf=5; 
+   repeated    AMsg    ramf = 6;
+}
+
+message TBTestDesc {
+    repeated TestDesc    list = 1;    
+}
