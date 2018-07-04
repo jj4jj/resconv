@@ -1,0 +1,30 @@
+list {
+  i32: 122
+  df: 24.254
+  bf: true
+  amf {
+    et: ET_B
+    i32: 34335
+    str: "hello"
+  }
+  bmf {
+    et: ET_A
+    i32: 5667
+    str: "world"
+    amf {
+      et: ET_NONE
+      i32: 2246
+      str: "nihao"
+    }
+  }
+  ramf {
+    et: ET_NONE
+    i32: 24677
+    str: "howru"
+  }
+  ramf {
+    et: ET_A
+    i32: 8963
+    str: "hahahhah"
+  }
+}

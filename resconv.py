@@ -176,13 +176,28 @@ def convert(path, dstdir):
     open(ptxtf,"w").write(MessageToString(tb))
     logging.debug("convert pbin path:%s -> %s,%s ...", path, pbinf, ptxtf)
 
+def pbin_dump(path):
+    name = os.path.basename(path)
+    TBTypeName = name.split('.')[0]
+    tb = getattr(res, TBTypeName)()
+    buff = open(path,"r").read()
+    tb.ParseFromString(buff)
+    print(MessageToString(tb))
+
 
 def main():
-    if(len(sys.argv)>2):
+    run_mode = 0 #convert
+    if '--dump' in sys.argv:
+        run_mode = 1
+        sys.argv.remove('--dump')
+    elif '--convert' in sys.argv:
+        sys.argv.remove('--convert')
+    global res 
+    protopath= './proto/res_pb2'
+    if run_mode == 0 and len(sys.argv) > 2:
         logging.basicConfig(level=logging.DEBUG)
         srcdir=sys.argv[1]
         paths=sys.argv[2]
-        protopath= './proto/res_pb2'
         dstdir = '.'
         if(len(sys.argv)>3):
             dstdir=sys.argv[3]
@@ -191,12 +206,21 @@ def main():
         proto_dir=os.path.dirname(protopath)
         proto_py=os.path.basename(protopath)
         sys.path.append(proto_dir)
-        global res 
         res = __import__(proto_py)
         [convert(srcdir+'/'+path, dstdir) for path in paths.split(',')]
+    elif run_mode == 1 and len(sys.argv) > 1:
+        if len(sys.argv) > 2:
+            protopath=sys.argv[2]
+        proto_dir=os.path.dirname(protopath)
+        proto_py=os.path.basename(protopath)
+        sys.path.append(proto_dir)
+        res = __import__(proto_py)
+        pbin_dump(sys.argv[1])
     else:
-        print('Usage:python %s <xlsx dir> <xlsx file list> [output dir] [proto path]' % sys.argv[0])
+        print('Usage: python %s <xlsx dir> <xlsx file list> [output dir] [proto path] [--convert]' % sys.argv[0])
+        print('     : python %s <pbin path> [proto path] --dump' % sys.argv[0])
         print('\tExample:python %s ./xlsx TBTestDesc_test.xlsx ./res ./proto/res_pb2' % sys.argv[0])
+        print('\tExample:python %s ./res/TBTestDesc.pbin ./proto/res_pb2 --dump #dump the pbin with string' % sys.argv[0])
         print("")
 
 
